@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.nfactorial.newsfeed.common.code.ErrorCode;
 import org.nfactorial.newsfeed.common.exception.BusinessException;
+import org.nfactorial.newsfeed.domain.comment.dto.result.GetCommentsFromCommentResult;
 import org.nfactorial.newsfeed.domain.comment.entity.Comment;
 import org.nfactorial.newsfeed.domain.comment.repository.CommentRepository;
 import org.nfactorial.newsfeed.domain.post.entity.Post;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +37,14 @@ public class CommentService implements CommentServiceApi {
 		Comment comment = getOwnedComment(commentId, profileId);
 		comment.updateContent(content);
 		return comment.getContent();
+	}
+
+	@Transactional(readOnly = true)
+	public GetCommentsFromCommentResult getCommentsFromComment(long commentId, Pageable pageable) {
+		Comment parentComment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+		Slice<Comment> comments = commentRepository.findAllByParentComment(parentComment, pageable);
+		return GetCommentsFromCommentResult.of(comments);
 	}
 
 	private Comment getOwnedComment(long commentId, long profileId) {

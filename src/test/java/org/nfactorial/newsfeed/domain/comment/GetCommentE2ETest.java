@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nfactorial.newsfeed.common.dto.GlobalApiResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.request.WriteToCommentRequest;
+import org.nfactorial.newsfeed.domain.comment.dto.response.GetCommentsFromCommentResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.response.GetCommentsFromPostResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.response.WriteToCommentResponse;
 import org.springframework.core.ParameterizedTypeReference;
@@ -109,6 +110,18 @@ class GetCommentE2ETest extends CommentE2ETest {
         assertThat(body.data().comments()).isEmpty();
     }
 
+    protected Long writeCommentToComment(String accessToken, Long parentCommentId, String content) {
+        WriteToCommentRequest request = new WriteToCommentRequest(content);
+        headers.setBearerAuth(accessToken);
+        ResponseEntity<GlobalApiResponse<WriteToCommentResponse>> response = restTemplate.exchange(
+            "/api/v1/comments/" + parentCommentId + "/comments",
+            HttpMethod.POST,
+            new HttpEntity<>(request, headers),
+            new ParameterizedTypeReference<>() {
+            });
+        return Objects.requireNonNull(response.getBody()).data().id();
+    }
+
     protected Long writeReplyToComment(String accessToken, Long parentCommentId, String content) {
         WriteToCommentRequest request = new WriteToCommentRequest(content);
         headers.setBearerAuth(accessToken);
@@ -119,5 +132,31 @@ class GetCommentE2ETest extends CommentE2ETest {
             new ParameterizedTypeReference<>() {
             });
         return Objects.requireNonNull(response.getBody()).data().id();
+    }
+
+    @Test
+    @DisplayName("대댓글 조회 성공")
+    void getCommentsFromComment() {
+        // given
+        Long postId = createPost(accessToken, "post content");
+        Long parentCommentId = writeComment(accessToken, postId, "parent comment");
+
+        writeCommentToComment(accessToken, parentCommentId, "child comment 1");
+        writeCommentToComment(accessToken, parentCommentId, "child comment 2");
+
+        // when
+        ResponseEntity<GlobalApiResponse<GetCommentsFromCommentResponse>> response = restTemplate.exchange(
+            "/api/v1/comments/" + parentCommentId + "/comments",
+            HttpMethod.GET,
+            new HttpEntity<>(headers),
+            new ParameterizedTypeReference<>() {
+            });
+
+        // then
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        GetCommentsFromCommentResponse responseBody = Objects.requireNonNull(response.getBody()).data();
+        assertThat(responseBody.comments()).hasSize(2);
+        assertThat(responseBody.comments().get(0).content()).isEqualTo("child comment 1");
+        assertThat(responseBody.comments().get(1).content()).isEqualTo("child comment 2");
     }
 }

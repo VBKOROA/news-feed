@@ -9,15 +9,19 @@ import org.nfactorial.newsfeed.domain.comment.dto.command.WriteToCommentCommand;
 import org.nfactorial.newsfeed.domain.comment.dto.request.UpdateCommentRequest;
 import org.nfactorial.newsfeed.domain.comment.dto.request.WriteCommentToPostRequest;
 import org.nfactorial.newsfeed.domain.comment.dto.request.WriteToCommentRequest;
+import org.nfactorial.newsfeed.domain.comment.dto.response.GetCommentsFromCommentResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.response.GetCommentsFromPostResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.response.UpdateCommentResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.response.WriteCommentToPostResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.response.WriteToCommentResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.result.CommentListByPostResult;
+import org.nfactorial.newsfeed.domain.comment.dto.result.GetCommentsFromCommentResult;
 import org.nfactorial.newsfeed.domain.comment.dto.result.WriteCommentToPostResult;
 import org.nfactorial.newsfeed.domain.comment.dto.result.WriteToCommentResult;
 import org.nfactorial.newsfeed.domain.comment.service.CommentService;
 import org.nfactorial.newsfeed.domain.comment.service.CommentingService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -90,5 +94,15 @@ public class CommentController {
 		WriteToCommentResult result = commentingService.writeToComment(command);
 		WriteToCommentResponse response = WriteToCommentResponse.of(result);
 		return GlobalApiResponse.of(SuccessCode.OK, response);
+	}
+
+	@GetMapping("/comments/{commentId}/comments")
+	public GlobalApiResponse<?> getCommentsFromComment(
+		@PathVariable("commentId")
+		long commentId,
+		@PageableDefault(size = 10)
+		Pageable pageable) {
+		GetCommentsFromCommentResult result = commentService.getCommentsFromComment(commentId, pageable);
+		return GlobalApiResponse.of(SuccessCode.OK, GetCommentsFromCommentResponse.of(result));
 	}
 }
