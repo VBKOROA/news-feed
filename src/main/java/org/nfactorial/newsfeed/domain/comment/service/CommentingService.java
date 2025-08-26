@@ -6,6 +6,7 @@ import org.nfactorial.newsfeed.common.code.ErrorCode;
 import org.nfactorial.newsfeed.common.exception.BusinessException;
 import org.nfactorial.newsfeed.domain.comment.dto.command.WriteCommentToPostCommand;
 import org.nfactorial.newsfeed.domain.comment.dto.command.WriteToCommentCommand;
+import org.nfactorial.newsfeed.domain.comment.dto.projection.ViewCommentFromPostProjection;
 import org.nfactorial.newsfeed.domain.comment.entity.Comment;
 import org.nfactorial.newsfeed.domain.comment.repository.CommentRepository;
 import org.nfactorial.newsfeed.domain.comment.dto.result.CommentListByPostResult;
@@ -34,31 +35,31 @@ public class CommentingService {
         Comment comment = Comment.writeToPost(post, profile, command.content());
         Comment savedComment = commentRepository.save(comment);
         return WriteCommentToPostResult.builder()
-                .id(savedComment.getId())
-                .createdAt(savedComment.getCreatedAt())
-                .content(savedComment.getContent())
-                .build();
+            .id(savedComment.getId())
+            .createdAt(savedComment.getCreatedAt())
+            .content(savedComment.getContent())
+            .build();
     }
 
     @Transactional(readOnly = true)
     public CommentListByPostResult commentListByPost(long postId) {
         Post post = postService.getPostById(postId);
-        List<Comment> comments = commentRepository.findAllByPost(post);
+        List<ViewCommentFromPostProjection> comments = commentRepository.viewCommentFromPost(post);
         return CommentListByPostResult.of(comments);
     }
 
     @Transactional
     public WriteToCommentResult writeToComment(WriteToCommentCommand writeToCommentCommand) {
         Comment parentComment = commentRepository.findById(writeToCommentCommand.commentId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
         Comment newComment = Comment.writeToComment(parentComment,
-                profileService.getProfileEntityById(writeToCommentCommand.profileId()),
-                writeToCommentCommand.content());
+            profileService.getProfileEntityById(writeToCommentCommand.profileId()),
+            writeToCommentCommand.content());
         commentRepository.save(newComment);
         return WriteToCommentResult.builder()
-                .id(newComment.getId())
-                .createdAt(newComment.getCreatedAt())
-                .content(newComment.getContent())
-                .build();
+            .id(newComment.getId())
+            .createdAt(newComment.getCreatedAt())
+            .content(newComment.getContent())
+            .build();
     }
 }
