@@ -29,9 +29,11 @@ public class Comment extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Post post;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Comment parentComment;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(nullable = false)
@@ -40,8 +42,12 @@ public class Comment extends BaseTimeEntity {
 	@Column(nullable = false)
 	private String content;
 
-	public static Comment write(Post post, Profile profile, String content) {
-		return new Comment(null, post, profile, content);
+	public static Comment writeToPost(Post post, Profile profile, String content) {
+		return new Comment(null, post, null, profile, content);
+	}
+
+	public static Comment writeToComment(Comment parentComment, Profile profile, String content) {
+		return new Comment(null, null, parentComment, profile, content);
 	}
 
 	public void updateContent(String content) {
