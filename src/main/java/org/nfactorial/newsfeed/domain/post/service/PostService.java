@@ -12,6 +12,7 @@ import org.nfactorial.newsfeed.domain.post.dto.request.PostUpdateRequest;
 import org.nfactorial.newsfeed.domain.post.dto.response.PostUpdateResponse;
 import org.nfactorial.newsfeed.domain.post.entity.Post;
 import org.nfactorial.newsfeed.domain.post.repository.PostRepository;
+import org.nfactorial.newsfeed.domain.upload.service.UploadService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -25,6 +26,8 @@ public class PostService implements PostServiceApi {
 	private final PostRepository postRepository;
 
 	private final GetPostByIdHelper getPostByIdHelper;
+
+	private final UploadService uploadService;
 
 	@Transactional
 	public PostUpdateResponse update(Long postId, PostUpdateRequest request,
@@ -49,6 +52,8 @@ public class PostService implements PostServiceApi {
 		if (!ObjectUtils.nullSafeEquals(foundPost.getProfile().getId(), currentUserProfile.profileId())) {
 			throw new BusinessException(ErrorCode.POST_ACCESS_DENIED);
 		}
+
+		uploadService.deleteAllByPost(foundPost);
 
 		postRepository.delete(foundPost);
 	}
