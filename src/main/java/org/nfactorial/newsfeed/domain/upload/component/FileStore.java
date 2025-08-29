@@ -33,7 +33,7 @@ public class FileStore {
         return uuid + ext;
     }
 
-    private String extractExt(String fileName) {
+    public String extractExt(String fileName) {
         int pos = fileName.lastIndexOf(".");
         return fileName.substring(pos);
     }
