@@ -1,7 +1,6 @@
 package org.nfactorial.newsfeed.domain.upload.component;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
 import org.nfactorial.newsfeed.common.code.ErrorCode;
