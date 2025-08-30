@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UploadService {
+public class UploadService implements UploadServiceApi {
     private final FileStore fileStore;
     private final UploadRepository uploadRepository;
 
@@ -46,6 +46,7 @@ public class UploadService {
         uploadRepository.saveAll(uploads);
     }
 
+    @Override
     public void deleteAllByPost(Post foundPost) {
         uploadRepository.deleteAllByPost(foundPost);
     }

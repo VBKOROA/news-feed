@@ -15,7 +15,7 @@ import org.nfactorial.newsfeed.domain.post.dto.response.PostUpdateResponse;
 import org.nfactorial.newsfeed.domain.post.entity.Post;
 import org.nfactorial.newsfeed.domain.post.repository.PostQueryRepository;
 import org.nfactorial.newsfeed.domain.post.repository.PostRepository;
-import org.nfactorial.newsfeed.domain.upload.service.UploadService;
+import org.nfactorial.newsfeed.domain.upload.service.UploadServiceApi;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -30,7 +30,7 @@ public class PostService implements PostServiceApi {
 
 	private final GetPostByIdHelper getPostByIdHelper;
 
-	private final UploadService uploadService;
+	private final UploadServiceApi uploadService;
 
 	private final PostQueryRepository postQueryRepository;
 
