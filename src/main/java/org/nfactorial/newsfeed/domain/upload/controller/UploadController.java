@@ -4,8 +4,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import javax.print.attribute.standard.Media;
-
 import org.nfactorial.newsfeed.domain.upload.dto.PrepareDownloadResult;
 import org.nfactorial.newsfeed.domain.upload.service.UploadService;
 import org.springframework.web.bind.annotation.RequestMapping;
