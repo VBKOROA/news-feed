@@ -5,13 +5,9 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/v1/comments/{{commentId}}/comments?page=1
+  url: {{baseUrl}}/api/v1/comments/{{commentId}}/comments
   body: none
   auth: inherit
-}
-
-params:query {
-  page: 1
 }
 
 vars:pre-request {
