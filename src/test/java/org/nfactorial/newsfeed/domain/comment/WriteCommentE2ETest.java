@@ -10,7 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nfactorial.newsfeed.common.dto.GlobalApiResponse;
 import org.nfactorial.newsfeed.domain.comment.dto.request.WriteCommentToPostRequest;
+import org.nfactorial.newsfeed.domain.comment.dto.request.WriteToCommentRequest;
 import org.nfactorial.newsfeed.domain.comment.dto.response.WriteCommentToPostResponse;
+import org.nfactorial.newsfeed.domain.comment.dto.response.WriteToCommentResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -106,5 +108,39 @@ class WriteCommentE2ETest extends CommentE2ETest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("댓글에 댓글 작성 성공")
+    void writeCommentToComment_success() {
+        // given
+        WriteCommentToPostRequest firstCommentRequest = new WriteCommentToPostRequest("This is the first comment.");
+        headers.setBearerAuth(accessToken);
+
+        ResponseEntity<GlobalApiResponse<WriteCommentToPostResponse>> firstCommentResponse = restTemplate.exchange(
+            "/api/v1/posts/" + postId + "/comments",
+            HttpMethod.POST,
+            new HttpEntity<>(firstCommentRequest, headers),
+            new ParameterizedTypeReference<>() {
+            });
+
+        assertThat(firstCommentResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Long parentCommentId = Objects.requireNonNull(firstCommentResponse.getBody()).data().id();
+
+        WriteToCommentRequest replyCommentRequest = new WriteToCommentRequest("This is a reply to the first comment.");
+
+        // when
+        ResponseEntity<GlobalApiResponse<WriteToCommentResponse>> replyCommentResponse = restTemplate.exchange(
+            "/api/v1/comments/" + parentCommentId + "/comments",
+            HttpMethod.POST,
+            new HttpEntity<>(replyCommentRequest, headers),
+            new ParameterizedTypeReference<>() {
+            });
+
+        // then
+        assertThat(replyCommentResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(replyCommentResponse.getBody()).isNotNull();
+        assertThat(Objects.requireNonNull(replyCommentResponse.getBody()).data().content()).isEqualTo("This is a reply to the first comment.");
+        assertThat(commentRepository.count()).isEqualTo(2);
     }
 }

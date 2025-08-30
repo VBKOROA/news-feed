@@ -14,14 +14,18 @@ public record GetCommentsFromPostResponse(
 	}
 
 	public record SimpleComment(
-		long id,
+		long commentId,
+		long profileId,
 		String nickname,
-		String content) {
+		String content,
+		boolean hasInnerComments) {
 		public static SimpleComment of(CommentListByPostResult.SimpleComment comment) {
 			return new SimpleComment(
-				comment.id(),
+				comment.commentId(),
+				comment.profileId(),
 				comment.nickname(),
-				comment.content());
+				comment.content(),
+				comment.hasInnerComments());
 		}
 	}
 }

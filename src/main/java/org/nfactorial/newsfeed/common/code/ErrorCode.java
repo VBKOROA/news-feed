@@ -31,7 +31,14 @@ public enum ErrorCode implements GlobalResponseCode {
 
 	// Comment
 	COMMENT_NOT_FOUND("COMMENT-404", "댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-	COMMENT_NOT_YOURS("COMMENT-403", "본인의 댓글이 아닙니다.", HttpStatus.FORBIDDEN);
+	COMMENT_NOT_YOURS("COMMENT-403", "본인의 댓글이 아닙니다.", HttpStatus.FORBIDDEN),
+
+	// Upload
+	FILE_SAVE_FAILED("UPLOAD-500", "서버가 파일을 뱉어냈습니다...", HttpStatus.INTERNAL_SERVER_ERROR),
+	EXT_NOT_ALLOWED("UPLOAD-400", "허용되지 않은 확장자입니다.", HttpStatus.BAD_REQUEST),
+	FILE_SIZE_TOO_BIG("UPLOAD-400", "파일 크기는 10MB 까지 입니다.", HttpStatus.BAD_REQUEST),
+	FILE_NOT_FOUND("UPLOAD-404", "파일을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+	UPLOAD_NOT_FOUND("UPLOAD-404-1", "업로드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
 	private final String code;
 	private final String message;

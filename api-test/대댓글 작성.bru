@@ -1,0 +1,29 @@
+meta {
+  name: 대댓글 작성
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/v1/comments/{{commentId}}/comments
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: {{accessToken}}
+}
+
+body:json {
+  {
+    "content": "content"
+  }
+}
+
+vars:pre-request {
+  commentId: 1
+}
+
+settings {
+  encodeUrl: true
+}

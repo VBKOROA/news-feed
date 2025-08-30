@@ -1,0 +1,29 @@
+meta {
+  name: 댓글 작성
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/posts/{{postId}}/comments
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: {{accessToken}}
+}
+
+body:json {
+  {
+    "content": "content"
+  }
+}
+
+vars:pre-request {
+  postId: 1
+}
+
+settings {
+  encodeUrl: true
+}

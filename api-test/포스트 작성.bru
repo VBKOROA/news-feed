@@ -1,0 +1,29 @@
+meta {
+  name: 포스트 작성
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/posts
+  body: multipartForm
+  auth: inherit
+}
+
+headers {
+  Authorization: {{accessToken}}
+}
+
+body:multipart-form {
+  body: {"content":"content"} @contentType(application/json)
+  uploads: @file(C:\Users\hex69\Pictures\admin-back.png)
+  ~uploads: @file(C:\Users\hex69\Documents\승수야 백개먼 하자v3.pdf)
+}
+
+body:file {
+  ~file: @file()
+}
+
+settings {
+  encodeUrl: true
+}
