@@ -12,7 +12,6 @@ import org.nfactorial.newsfeed.domain.post.dto.request.PostUpdateRequest;
 import org.nfactorial.newsfeed.domain.post.dto.response.PostCreateResponse;
 import org.nfactorial.newsfeed.domain.post.dto.response.PostUpdateResponse;
 import org.nfactorial.newsfeed.domain.post.service.PostCreationService;
-import org.nfactorial.newsfeed.domain.post.service.PostInteractionService;
 import org.nfactorial.newsfeed.domain.post.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +36,6 @@ public class PostController {
 
 	private final PostService postService;
 	private final PostCreationService postCreationService;
-	private final PostInteractionService postInteractionService;
 	private static final String CREATE_POST_BODY = "body";
 	private static final String CREATE_POST_UPLOADS = "uploads";
 
@@ -74,7 +72,7 @@ public class PostController {
 	Long postId, @AuthProfile
 	AuthProfileDto profile) {
 
-		PostViewProjection response = postInteractionService.viewPost(postId, profile.profileId());
+		PostViewProjection response = postService.viewPost(postId, profile.profileId());
 
 		return GlobalApiResponse.of(SuccessCode.OK, response);
 	}
