@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j(topic = "FileStore")
 public class FileStore {
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -21,6 +24,7 @@ public class FileStore {
         try {
             multipartFile.transferTo(new File(uploadPath));
         } catch (Exception e) {
+            log.error("error occurred: {}", e.getMessage());
             throw new BusinessException(ErrorCode.FILE_SAVE_FAILED);
         }
 
