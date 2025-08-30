@@ -24,14 +24,13 @@ public class JwtFilter implements Filter {
 	private final TokenBlacklist tokenBlacklist;
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
-		IOException,
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 		ServletException {
 		HttpServletRequest httpServletRequest = (HttpServletRequest)request;
 		getHeader(httpServletRequest)
 			.flatMap(this::getBearerToken)
 			.filter(token -> tokenBlacklist.hasToken(token) == false)
-			.map(jwtUtil::getAccountId)
+			.flatMap(jwtUtil::getAccountId)
 			.ifPresent(accountId -> {
 				request.setAttribute(ACCOUNT_ID_ATTR, accountId);
 			});
