@@ -1,0 +1,19 @@
+meta {
+  name: 파일 다운로드
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/v1/uploads/{{uploadId}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  uploadId: 1
+}
+
+settings {
+  encodeUrl: true
+}

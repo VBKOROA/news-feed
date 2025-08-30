@@ -8,9 +8,12 @@ import org.nfactorial.newsfeed.common.code.ErrorCode;
 import org.nfactorial.newsfeed.common.exception.BusinessException;
 import org.nfactorial.newsfeed.domain.post.entity.Post;
 import org.nfactorial.newsfeed.domain.upload.component.FileStore;
+import org.nfactorial.newsfeed.domain.upload.dto.PrepareDownloadResult;
 import org.nfactorial.newsfeed.domain.upload.entity.Upload;
 import org.nfactorial.newsfeed.domain.upload.repository.UploadRepository;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
@@ -45,6 +48,17 @@ public class UploadService {
 
     public void deleteAllByPost(Post foundPost) {
         uploadRepository.deleteAllByPost(foundPost);
+    }
+
+    @Transactional(readOnly = true)
+    public PrepareDownloadResult prepareDownload(long uploadId) {
+        Upload upload = uploadRepository.findById(uploadId)
+            .orElseThrow(() -> new BusinessException(ErrorCode.UPLOAD_NOT_FOUND));
+
+        String path = upload.getUri();
+        Resource resource = fileStore.loadFileAsResource(path);
+
+        return new PrepareDownloadResult(resource, resource.getFilename());
     }
 
     private void validateFile(MultipartFile file) {
