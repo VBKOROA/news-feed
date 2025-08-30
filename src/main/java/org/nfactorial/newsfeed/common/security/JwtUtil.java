@@ -1,9 +1,8 @@
 package org.nfactorial.newsfeed.common.security;
 
 import java.time.Instant;
+import java.util.Optional;
 
-import org.nfactorial.newsfeed.common.code.ErrorCode;
-import org.nfactorial.newsfeed.common.exception.BusinessException;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -25,12 +24,12 @@ public class JwtUtil {
 			.sign(algorithm);
 	}
 
-	public Long getAccountId(final String token) {
+	public Optional<Long> getAccountId(final String token) {
 		try {
 			String subject = JWT.require(algorithm).build().verify(token).getSubject();
-			return Long.parseLong(subject);
+			return Optional.of(Long.parseLong(subject));
 		} catch (Exception e) {
-			throw new BusinessException(ErrorCode.INVALID_TOKEN);
+			return Optional.empty();
 		}
 	}
 }

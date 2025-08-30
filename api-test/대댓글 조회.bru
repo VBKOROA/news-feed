@@ -1,0 +1,23 @@
+meta {
+  name: 대댓글 조회
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/v1/comments/{{commentId}}/comments?page=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1
+}
+
+vars:pre-request {
+  commentId: 1
+}
+
+settings {
+  encodeUrl: true
+}

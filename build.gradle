@@ -37,6 +37,26 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // QueryDSL dependencies
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:7.0'
+    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:7.0:jpa'
+}
+
+// QueryDSL generated sources directory 설정
+def querydslGeneratedDir = file("$buildDir/generated/querydsl")
+
+sourceSets {
+    main {
+        java {
+            srcDirs += [ querydslGeneratedDir ]
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.annotationProcessorGeneratedSourcesDirectory = querydslGeneratedDir
+    // 필요시 추가 annotationProcessor 옵션을 여기에 붙일 수 있습니다.
 }
 
 tasks.named('test') {
