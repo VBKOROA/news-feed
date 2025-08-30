@@ -3,6 +3,7 @@ package org.nfactorial.newsfeed.domain.upload.component;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.nfactorial.newsfeed.common.code.ErrorCode;
@@ -52,13 +53,17 @@ public class FileStore {
     }
 
     private String internalNameGen(String fileName) {
-        String ext = extractExt(fileName);
+        String ext = extractExt(fileName)
+            .orElseThrow(() -> new BusinessException(ErrorCode.EXT_NOT_ALLOWED));
         String uuid = UUID.randomUUID().toString();
         return uuid + ext;
     }
 
-    public String extractExt(String fileName) {
+    public Optional<String> extractExt(String fileName) {
         int pos = fileName.lastIndexOf(".");
-        return fileName.substring(pos);
+        if (pos == -1) {
+            return Optional.empty();
+        }
+        return Optional.of(fileName.substring(pos));
     }
 }
