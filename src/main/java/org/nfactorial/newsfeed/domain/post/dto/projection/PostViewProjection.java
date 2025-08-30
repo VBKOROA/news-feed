@@ -8,24 +8,24 @@ public record PostViewProjection(
     Long profileId,
     String nickname,
     String content,
-    int likeCount,
-    long commentCount,
-    int viewCount,
-    boolean hasLikedPost,
+    Integer likeCount,
+    Long commentCount,
+    Integer viewCount,
+    Boolean hasLikedPost,
     LocalDateTime createdAt,
     LocalDateTime modifiedAt,
     List<SimpleFileProjection> files,
     List<SimpleCommentProjection> comments) {
     public record SimpleFileProjection(
-        long fileId,
+        Long fileId,
         String fileName) {
     }
 
     public record SimpleCommentProjection(
-        long commentId,
-        long profileId,
+        Long commentId,
+        Long profileId,
         String nickname,
         String contents,
-        boolean hasInnerComments) {
+        Boolean hasInnerComments) {
     }
 }

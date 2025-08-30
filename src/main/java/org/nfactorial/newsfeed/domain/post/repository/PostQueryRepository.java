@@ -40,7 +40,11 @@ public class PostQueryRepository {
             .join(post.profile, postAuthor)
             .leftJoin(upload).on(upload.post.id.eq(postId))
             .leftJoin(comment).on(comment.post.id.eq(postId))
+            .leftJoin(comment.profile, commentAuthor)
             .where(post.id.eq(postId))
+            .groupBy(post.id, postAuthor.id, postAuthor.nickname, post.content,
+                post.likeCount, post.viewCount, post.createdAt, post.modifiedAt, upload.id, upload.publicName,
+                comment.id, commentAuthor.id, commentAuthor.nickname, comment.content)
             .transform(
                 GroupBy.groupBy(post.id).as(
                     Projections.constructor(
@@ -70,7 +74,7 @@ public class PostQueryRepository {
                                 commentAuthor.id,
                                 commentAuthor.nickname,
                                 comment.content,
-                                Expressions.asBoolean(false)).skipNulls()))));
+                                Expressions.nullExpression(Boolean.class)).skipNulls()))));
         return Optional.ofNullable(result.get(postId));
     }
 
