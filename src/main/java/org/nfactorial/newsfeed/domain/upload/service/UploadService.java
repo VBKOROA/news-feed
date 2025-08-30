@@ -64,7 +64,8 @@ public class UploadService implements UploadServiceApi {
 
     private void validateFile(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        String ext = fileStore.extractExt(fileName);
+        String ext = fileStore.extractExt(fileName)
+            .orElseThrow(() -> new BusinessException(ErrorCode.EXT_NOT_ALLOWED));
 
         if (EXT_WHITELIST.contains(ext) == false) {
             throw new BusinessException(ErrorCode.EXT_NOT_ALLOWED);
