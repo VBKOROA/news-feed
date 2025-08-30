@@ -1,0 +1,23 @@
+meta {
+  name: 포스트 조회
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/v1/posts/{{testPostId}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: {{accessToken}}
+}
+
+vars:pre-request {
+  testPostId: 2
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "news-feed-v2-test",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

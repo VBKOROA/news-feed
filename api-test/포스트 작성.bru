@@ -1,0 +1,28 @@
+meta {
+  name: 포스트 작성
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/posts
+  body: multipartForm
+  auth: inherit
+}
+
+headers {
+  Authorization: {{accessToken}}
+}
+
+body:multipart-form {
+  body: {"content":"content"} @contentType(application/json)
+  ~uploads: @file(C:\Users\hex69\Pictures\admin-back.png)
+}
+
+body:file {
+  ~file: @file()
+}
+
+settings {
+  encodeUrl: true
+}
