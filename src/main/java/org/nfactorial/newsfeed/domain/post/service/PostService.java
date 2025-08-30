@@ -35,6 +35,8 @@ public class PostService implements PostServiceApi {
 
 	private final PostQueryRepository postQueryRepository;
 
+	private final ViewCountService viewCountService;
+
 	@Transactional
 	public PostUpdateResponse update(Long postId, PostUpdateRequest request,
 		AuthProfileDto currentUserProfile) {
@@ -92,7 +94,10 @@ public class PostService implements PostServiceApi {
 
 	@Transactional
 	public ViewPostResult viewPost(long postId, long viewerProfileId) {
-		postRepository.incrementViewCount(postId);
+		if (viewCountService.isFirstView(postId, viewerProfileId)) {
+			postRepository.incrementViewCount(postId);
+			viewCountService.addView(postId, viewerProfileId);
+		}
 
 		var postDetail = postQueryRepository.findPostDetailByPostId(postId, viewerProfileId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
