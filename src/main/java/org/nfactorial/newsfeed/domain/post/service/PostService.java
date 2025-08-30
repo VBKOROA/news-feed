@@ -103,7 +103,7 @@ public class PostService implements PostServiceApi {
 
 		var finalComments = simpleComments;
 
-		if (hasComments == true) {
+		if (hasComments) {
 			List<Long> commentIds = simpleComments.stream().map(c -> c.commentId()).toList();
 			Set<Long> parentCommentIds = postQueryRepository.findParentCommentsInCommentIds(commentIds);
 
