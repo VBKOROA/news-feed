@@ -6,11 +6,12 @@ import org.nfactorial.newsfeed.common.code.SuccessCode;
 import org.nfactorial.newsfeed.common.dto.GlobalApiResponse;
 import org.nfactorial.newsfeed.common.security.AuthProfile;
 import org.nfactorial.newsfeed.common.security.AuthProfileDto;
-import org.nfactorial.newsfeed.domain.post.dto.projection.PostViewProjection;
 import org.nfactorial.newsfeed.domain.post.dto.request.PostCreateRequest;
 import org.nfactorial.newsfeed.domain.post.dto.request.PostUpdateRequest;
 import org.nfactorial.newsfeed.domain.post.dto.response.PostCreateResponse;
 import org.nfactorial.newsfeed.domain.post.dto.response.PostUpdateResponse;
+import org.nfactorial.newsfeed.domain.post.dto.response.ViewPostResponse;
+import org.nfactorial.newsfeed.domain.post.dto.result.ViewPostResult;
 import org.nfactorial.newsfeed.domain.post.service.PostCreationService;
 import org.nfactorial.newsfeed.domain.post.service.PostService;
 import org.springframework.http.HttpStatus;
@@ -68,13 +69,14 @@ public class PostController {
 
 	@GetMapping("/{postId}")
 	@ResponseStatus(HttpStatus.OK)
-	public GlobalApiResponse<PostViewProjection> viewPost(@PathVariable
+	public GlobalApiResponse<ViewPostResponse> viewPost(@PathVariable
 	Long postId, @AuthProfile
 	AuthProfileDto profile) {
 
-		PostViewProjection response = postService.viewPost(postId, profile.profileId());
+		ViewPostResult result = postService.viewPost(postId, profile.profileId());
+		ViewPostResponse resp = ViewPostResponse.of(result);
 
-		return GlobalApiResponse.of(SuccessCode.OK, response);
+		return GlobalApiResponse.of(SuccessCode.OK, resp);
 	}
 
 	@DeleteMapping("/{postId}")
